@@ -39,11 +39,11 @@ if (isSeeker()) {
     $hasApplied = hasApplied($_SESSION['user_id'], $jobId);
 }
 
-// Get similar jobs
+// Get similar jobs - FIXED: Changed 'open' to 'active'
 $similarJobs = $db->fetchAll("SELECT j.*, u.name as employer_name, u.company_name 
                              FROM job_listings j 
                              JOIN users u ON j.employer_id = u.user_id 
-                             WHERE j.status = 'open' 
+                             WHERE j.status = 'active' 
                              AND j.category = ? 
                              AND j.job_id != ? 
                              ORDER BY j.is_featured DESC, j.created_at DESC 
@@ -153,8 +153,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['apply_ajax']) && isSee
         exit;
     }
     
-    // Check if job is still open
-    if ($job['status'] != 'open') {
+    // Check if job is still active - FIXED: Changed 'open' to 'active'
+    if ($job['status'] != 'active') {
         echo json_encode(['success' => false, 'message' => "This job is no longer accepting applications."]);
         exit;
     }
@@ -167,8 +167,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['apply_ajax']) && isSee
 
 <?php require_once 'includes/header.php'; ?>
 
-<!-- Job Header -->
-<div class="job-header mb-4">
+<!-- Job Header - Updated with modern styling -->
+<section class="py-4 bg-light">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-8">
@@ -180,29 +180,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['apply_ajax']) && isSee
                     </ol>
                 </nav>
                 <h1 class="mb-2"><?= htmlspecialchars($job['title']) ?></h1>
-                <div class="d-flex flex-wrap align-items-center mb-2">
-                    <span class="me-3">
-                        <i class="fas fa-building me-1"></i> 
+                <div class="d-flex flex-wrap align-items-center mb-3">
+                    <span class="me-3 text-gray-600">
+                        <i class="fas fa-building me-1 text-primary"></i> 
                         <?= htmlspecialchars($job['company_name'] ?: $employer['name']) ?>
                     </span>
-                    <span class="me-3">
-                        <i class="fas fa-map-marker-alt me-1"></i> 
+                    <span class="me-3 text-gray-600">
+                        <i class="fas fa-map-marker-alt me-1 text-primary"></i> 
                         <?= htmlspecialchars($job['location']) ?>
                     </span>
-                    <span class="badge bg-<?= $job['job_type'] == 'full-time' ? 'primary' : ($job['job_type'] == 'part-time' ? 'success' : ($job['job_type'] == 'remote' ? 'info' : 'secondary')) ?> me-2">
-                        <?= ucfirst(str_replace('-', ' ', $job['job_type'])) ?>
+                    <!-- FIXED: Changed job_type comparison to use underscores -->
+                    <span class="badge bg-<?= $job['job_type'] == 'full_time' ? 'primary' : ($job['job_type'] == 'part_time' ? 'success' : ($job['job_type'] == 'contract' ? 'info' : 'secondary')) ?> me-2">
+                        <?= ucfirst(str_replace('_', ' ', $job['job_type'])) ?>
                     </span>
                     <?php if ($job['is_featured']): ?>
                         <span class="badge bg-warning text-dark">Featured</span>
                     <?php endif; ?>
                 </div>
                 <p class="text-muted mb-0">
-                    <i class="fas fa-clock me-1"></i> Posted <?= timeAgo($job['created_at']) ?>
-                    <?php if ($job['application_deadline']): ?>
+                    <i class="fas fa-clock me-1 text-primary"></i> Posted <?= timeAgo($job['created_at']) ?>
+                    <!-- FIXED: Changed application_deadline to expires_at -->
+                    <?php if (isset($job['expires_at']) && $job['expires_at']): ?>
                         <span class="ms-3">
-                            <i class="fas fa-calendar-alt me-1"></i> Deadline: <?= formatDate($job['application_deadline']) ?>
+                            <i class="fas fa-calendar-alt me-1 text-primary"></i> Deadline: <?= formatDate($job['expires_at']) ?>
                             <?php 
-                            $daysLeft = floor((strtotime($job['application_deadline']) - time()) / (60 * 60 * 24));
+                            $daysLeft = floor((strtotime($job['expires_at']) - time()) / (60 * 60 * 24));
                             if ($daysLeft > 0): 
                             ?>
                                 <span class="badge bg-info ms-1"><?= $daysLeft ?> day<?= $daysLeft != 1 ? 's' : '' ?> left</span>
@@ -219,7 +221,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['apply_ajax']) && isSee
                         <button class="btn btn-success" disabled>
                             <i class="fas fa-check-circle me-2"></i>Applied
                         </button>
-                    <?php elseif ($job['status'] == 'open'): ?>
+                    <!-- FIXED: Changed status check from 'open' to 'active' -->
+                    <?php elseif ($job['status'] == 'active'): ?>
                         <a href="apply.php?job_id=<?= $jobId ?>" class="btn btn-primary">
                             <i class="fas fa-paper-plane me-2"></i>Apply Now
                         </a>
@@ -235,7 +238,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['apply_ajax']) && isSee
                     <a href="applicants.php?job_id=<?= $jobId ?>" class="btn btn-primary">
                         <i class="fas fa-users me-2"></i>View Applicants
                     </a>
-                    <a href="post_job.php?edit=<?= $jobId ?>" class="btn btn-outline-secondary ms-2">
+                    <a href="post_job.php?edit=<?= $jobId ?>" class="btn btn-outline-primary ms-2">
                         <i class="fas fa-edit me-1"></i>Edit
                     </a>
                 <?php elseif (!isLoggedIn()): ?>
@@ -249,14 +252,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['apply_ajax']) && isSee
             </div>
         </div>
     </div>
-</div>
+</section>
 
-<div class="container">
+<div class="container py-4">
     <div class="row">
         <!-- Main Job Content -->
         <div class="col-lg-8">
             <!-- Job Description -->
-            <div class="card mb-4">
+            <div class="card shadow-sm mb-4">
                 <div class="card-header bg-white">
                     <h5 class="mb-0">Job Description</h5>
                 </div>
@@ -281,7 +284,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['apply_ajax']) && isSee
                     </div>
                     <?php endif; ?>
                     
-                    <?php if (isSeeker() && !$hasApplied && $job['status'] == 'open'): ?>
+                    <!-- FIXED: Changed status check from 'open' to 'active' -->
+                    <?php if (isSeeker() && !$hasApplied && $job['status'] == 'active'): ?>
                     <div class="text-center mt-4">
                         <a href="apply.php?job_id=<?= $jobId ?>" class="btn btn-lg btn-primary">
                             Apply for this Position
@@ -292,7 +296,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['apply_ajax']) && isSee
             </div>
             
             <!-- Company Overview -->
-            <div class="card mb-4">
+            <div class="card shadow-sm mb-4">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">About the Employer</h5>
                     <a href="employer_profile.php?id=<?= $job['employer_id'] ?>" class="btn btn-sm btn-outline-primary">View Profile</a>
@@ -300,9 +304,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['apply_ajax']) && isSee
                 <div class="card-body">
                     <div class="d-flex">
                         <?php if (!empty($employer['profile_image'])): ?>
-                            <img src="<?= SITE_URL ?>/uploads/profiles/<?= htmlspecialchars($employer['profile_image']) ?>" class="company-logo me-3">
+                            <img src="<?= SITE_URL ?>/uploads/profiles/<?= htmlspecialchars($employer['profile_image']) ?>" class="employer-logo me-3">
                         <?php else: ?>
-                            <div class="company-logo me-3 bg-light d-flex align-items-center justify-content-center">
+                            <div class="employer-img-placeholder me-3">
                                 <i class="fas fa-building text-secondary"></i>
                             </div>
                         <?php endif; ?>
@@ -325,11 +329,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['apply_ajax']) && isSee
                             <?php endif; ?>
                             
                             <?php if (!empty($employer['location'])): ?>
-                            <p class="mb-1"><i class="fas fa-map-marker-alt me-2"></i><?= htmlspecialchars($employer['location']) ?></p>
+                            <p class="mb-1"><i class="fas fa-map-marker-alt me-2 text-primary"></i><?= htmlspecialchars($employer['location']) ?></p>
                             <?php endif; ?>
                             
                             <?php if (!empty($employer['website'])): ?>
-                            <p class="mb-1"><i class="fas fa-globe me-2"></i><a href="<?= htmlspecialchars($employer['website']) ?>" target="_blank"><?= htmlspecialchars($employer['website']) ?></a></p>
+                            <p class="mb-1"><i class="fas fa-globe me-2 text-primary"></i><a href="<?= htmlspecialchars($employer['website']) ?>" target="_blank"><?= htmlspecialchars($employer['website']) ?></a></p>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -347,7 +351,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['apply_ajax']) && isSee
             </div>
             
             <!-- Similar Jobs -->
-            <div class="card">
+            <div class="card shadow-sm">
                 <div class="card-header bg-white">
                     <h5 class="mb-0">Similar Jobs</h5>
                 </div>
@@ -356,7 +360,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['apply_ajax']) && isSee
                         <div class="row">
                             <?php foreach ($similarJobs as $similarJob): ?>
                             <div class="col-md-6 mb-3">
-                                <div class="card h-100 job-item">
+                                <div class="card h-100 job-item hover-lift">
                                     <div class="card-body">
                                         <h6 class="card-title">
                                             <a href="job_detail.php?id=<?= $similarJob['job_id'] ?>" class="text-decoration-none">
@@ -364,13 +368,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['apply_ajax']) && isSee
                                             </a>
                                         </h6>
                                         <p class="card-text text-muted small">
-                                            <i class="fas fa-building me-1"></i> 
+                                            <i class="fas fa-building me-1 text-primary"></i> 
                                             <?= htmlspecialchars($similarJob['company_name'] ?: $similarJob['employer_name']) ?>
                                         </p>
                                         <div class="mb-2">
-                                            <small class="d-block mb-1"><i class="fas fa-map-marker-alt me-1"></i> <?= htmlspecialchars($similarJob['location']) ?></small>
-                                            <span class="badge bg-<?= $similarJob['job_type'] == 'full-time' ? 'primary' : ($similarJob['job_type'] == 'part-time' ? 'success' : ($similarJob['job_type'] == 'remote' ? 'info' : 'secondary')) ?>">
-                                                <?= ucfirst(str_replace('-', ' ', $similarJob['job_type'])) ?>
+                                            <small class="d-block mb-1"><i class="fas fa-map-marker-alt me-1 text-primary"></i> <?= htmlspecialchars($similarJob['location']) ?></small>
+                                            <!-- FIXED: Changed job_type comparison to use underscores -->
+                                            <span class="badge bg-<?= $similarJob['job_type'] == 'full_time' ? 'primary' : ($similarJob['job_type'] == 'part_time' ? 'success' : ($similarJob['job_type'] == 'contract' ? 'info' : 'secondary')) ?>">
+                                                <?= ucfirst(str_replace('_', ' ', $similarJob['job_type'])) ?>
                                             </span>
                                         </div>
                                         <a href="job_detail.php?id=<?= $similarJob['job_id'] ?>" class="btn btn-sm btn-outline-primary">View Details</a>
@@ -395,7 +400,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['apply_ajax']) && isSee
         <!-- Sidebar -->
         <div class="col-lg-4">
             <!-- Job Summary -->
-            <div class="card job-meta mb-4">
+            <div class="card job-meta mb-4 shadow-sm">
                 <div class="card-header bg-white">
                     <h5 class="mb-0">Job Summary</h5>
                 </div>
@@ -407,11 +412,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['apply_ajax']) && isSee
                             <span class="float-end"><?= date('M j, Y', strtotime($job['created_at'])) ?></span>
                         </li>
                         
-                        <?php if ($job['application_deadline']): ?>
+                        <!-- FIXED: Changed application_deadline to expires_at -->
+                        <?php if (isset($job['expires_at']) && $job['expires_at']): ?>
                         <li class="mb-3">
                             <i class="fas fa-hourglass-end me-2 text-primary"></i>
                             <strong>Application Deadline:</strong>
-                            <span class="float-end"><?= date('M j, Y', strtotime($job['application_deadline'])) ?></span>
+                            <span class="float-end"><?= date('M j, Y', strtotime($job['expires_at'])) ?></span>
                         </li>
                         <?php endif; ?>
                         
@@ -424,7 +430,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['apply_ajax']) && isSee
                         <li class="mb-3">
                             <i class="fas fa-briefcase me-2 text-primary"></i>
                             <strong>Job Type:</strong>
-                            <span class="float-end"><?= ucfirst(str_replace('-', ' ', $job['job_type'])) ?></span>
+                            <!-- FIXED: Changed job_type display format -->
+                            <span class="float-end"><?= ucfirst(str_replace('_', ' ', $job['job_type'])) ?></span>
                         </li>
                         
                         <li class="mb-3">
@@ -460,7 +467,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['apply_ajax']) && isSee
                                 <button class="btn btn-success" disabled>
                                     <i class="fas fa-check-circle me-2"></i>Applied
                                 </button>
-                            <?php elseif ($job['status'] == 'open'): ?>
+                            <!-- FIXED: Changed status check from 'open' to 'active' -->
+                            <?php elseif ($job['status'] == 'active'): ?>
                                 <a href="apply.php?job_id=<?= $jobId ?>" class="btn btn-primary">
                                     <i class="fas fa-paper-plane me-2"></i>Apply Now
                                 </a>
@@ -490,7 +498,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['apply_ajax']) && isSee
             </div>
             
             <!-- Share Job -->
-            <div class="card mb-4">
+            <div class="card mb-4 shadow-sm">
                 <div class="card-header bg-white">
                     <h5 class="mb-0">Share This Job</h5>
                 </div>
@@ -508,7 +516,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['apply_ajax']) && isSee
                     </div>
                     <div class="input-group">
                         <input type="text" id="job-url" class="form-control" value="<?= SITE_URL ?>/job_detail.php?id=<?= $jobId ?>" readonly>
-                        <button class="btn btn-outline-secondary" type="button" onclick="copyJobUrl()">
+                        <button class="btn btn-outline-primary" type="button" onclick="copyJobUrl()">
                             <i class="fas fa-copy"></i>
                         </button>
                     </div>
@@ -516,7 +524,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['apply_ajax']) && isSee
             </div>
             
             <!-- Report Job -->
-            <div class="card">
+            <div class="card shadow-sm">
                 <div class="card-body">
                     <p class="mb-2"><i class="fas fa-exclamation-triangle me-2 text-warning"></i>Report This Job</p>
                     <p class="small text-muted mb-2">If you believe this job is inappropriate or violates our terms of service, please report it.</p>

@@ -3,7 +3,7 @@
  * Database connection class for AmmooJobs platform
  * 
  * Provides centralized database connection and query methods
- * Last updated: 2025-05-01
+ * Last updated: 2025-05-02
  * Author: AmmooJobs Development Team
  */
 
@@ -170,6 +170,54 @@ class Database {
     }
     
     /**
+     * Check if a column exists in a table
+     * 
+     * @param string $tableName Name of the table
+     * @param string $columnName Name of the column to check
+     * @return bool True if column exists, False if not
+     */
+    public function columnExists($tableName, $columnName) {
+        try {
+            // Sanitize input to prevent SQL injection
+            $tableName = $this->escape($tableName);
+            $columnName = $this->escape($columnName);
+            
+            // Query to check if column exists
+            $stmt = $this->connection->query("SHOW COLUMNS FROM `{$tableName}` LIKE '{$columnName}'");
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            $this->handleError($e, "SHOW COLUMNS FROM `{$tableName}` LIKE '{$columnName}'");
+            return false;
+        }
+    }
+    
+    /**
+     * Get all column names for a table
+     * 
+     * @param string $tableName Name of the table
+     * @return array Array of column names or empty array if error
+     */
+    public function getTableColumns($tableName) {
+        try {
+            // Sanitize input to prevent SQL injection
+            $tableName = $this->escape($tableName);
+            
+            // Query to get all columns
+            $stmt = $this->connection->query("SHOW COLUMNS FROM `{$tableName}`");
+            $columns = [];
+            
+            while ($row = $stmt->fetch()) {
+                $columns[] = $row['Field'];
+            }
+            
+            return $columns;
+        } catch (PDOException $e) {
+            $this->handleError($e, "SHOW COLUMNS FROM `{$tableName}`");
+            return [];
+        }
+    }
+    
+    /**
      * Escape a string for safe use in SQL queries
      * Note: Generally, you should use prepared statements instead
      * 
@@ -178,6 +226,24 @@ class Database {
      */
     public function escape($string) {
         return substr($this->connection->quote($string), 1, -1);
+    }
+    
+    /**
+     * Get database connection status
+     *
+     * @return bool True if connected, False otherwise
+     */
+    public function isConnected() {
+        return $this->connection !== null;
+    }
+    
+    /**
+     * Get PDO connection object (advanced usage)
+     * 
+     * @return PDO PDO connection object
+     */
+    public function getConnection() {
+        return $this->connection;
     }
     
     /**
@@ -200,7 +266,7 @@ class Database {
         }
         
         // Log error with timestamp
-        $timestamp = date('Y-m-d H:i:s'); // Current time: 2025-05-01 17:05:21
+        $timestamp = date('Y-m-d H:i:s'); // Current time: 2025-05-02 09:37:45
         $currentUser = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Current user: HasinduNimesh
         error_log("[{$timestamp}] [{$currentUser}] {$errorMsg}");
         

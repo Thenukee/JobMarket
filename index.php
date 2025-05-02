@@ -17,30 +17,30 @@ require_once 'includes/header.php';
 
 // Wrap database queries in try/catch to prevent 500 errors
 try {
-    // Get featured jobs
+    // Get featured jobs - FIXED: changed 'open' to 'active'
     $featuredJobs = $db->fetchAll("SELECT j.*, u.name as employer_name, u.company_name 
                                 FROM job_listings j 
                                 JOIN users u ON j.employer_id = u.user_id 
-                                WHERE j.status = 'open' AND j.is_featured = 1 
+                                WHERE j.status = 'active' AND j.is_featured = 1 
                                 ORDER BY j.created_at DESC LIMIT 6");
 
-    // Get recent jobs
+    // Get recent jobs - FIXED: changed 'open' to 'active'
     $recentJobs = $db->fetchAll("SELECT j.*, u.name as employer_name, u.company_name 
                                 FROM job_listings j 
                                 JOIN users u ON j.employer_id = u.user_id 
-                                WHERE j.status = 'open' 
+                                WHERE j.status = 'active' 
                                 ORDER BY j.created_at DESC LIMIT 8");
 
-    // Get job categories with counts
+    // Get job categories with counts - FIXED: changed 'open' to 'active'
     $categories = $db->fetchAll("SELECT category, COUNT(*) as count 
                              FROM job_listings 
-                             WHERE status = 'open' 
+                             WHERE status = 'active' 
                              GROUP BY category 
                              ORDER BY count DESC LIMIT 8");
 
-    // Get stats
+    // Get stats - FIXED: changed 'open' to 'active'
     $stats = [
-        'jobs' => $db->fetchSingle("SELECT COUNT(*) as count FROM job_listings WHERE status = 'open'")['count'] ?? 0,
+        'jobs' => $db->fetchSingle("SELECT COUNT(*) as count FROM job_listings WHERE status = 'active'")['count'] ?? 0,
         'companies' => $db->fetchSingle("SELECT COUNT(DISTINCT employer_id) as count FROM job_listings")['count'] ?? 0,
         'candidates' => $db->fetchSingle("SELECT COUNT(*) as count FROM users WHERE user_type = 'seeker'")['count'] ?? 0
     ];
@@ -201,8 +201,8 @@ if (!function_exists('timeAgo')) {
                                     <p><i class="fas fa-money-bill-wave me-1"></i> <?= formatSalary($job['salary_min'], $job['salary_max']) ?></p>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <span class="badge bg-<?= $job['job_type'] == 'full-time' ? 'primary' : ($job['job_type'] == 'part-time' ? 'success' : ($job['job_type'] == 'remote' ? 'info' : 'secondary')) ?>">
-                                        <?= ucfirst(str_replace('-', ' ', $job['job_type'])) ?>
+                                    <span class="badge bg-<?= $job['job_type'] == 'full_time' ? 'primary' : ($job['job_type'] == 'part_time' ? 'success' : ($job['job_type'] == 'remote' ? 'info' : 'secondary')) ?>">
+                                        <?= ucfirst(str_replace('_', ' ', $job['job_type'])) ?>
                                     </span>
                                     <a href="job_detail.php?id=<?= $job['job_id'] ?>" class="btn btn-sm btn-outline-primary">View Details</a>
                                 </div>
@@ -234,8 +234,8 @@ if (!function_exists('timeAgo')) {
                         <div class="card job-item h-100">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between mb-3">
-                                    <span class="badge bg-<?= $job['job_type'] == 'full-time' ? 'primary' : ($job['job_type'] == 'part-time' ? 'success' : ($job['job_type'] == 'remote' ? 'info' : 'secondary')) ?>">
-                                        <?= ucfirst(str_replace('-', ' ', $job['job_type'])) ?>
+                                    <span class="badge bg-<?= $job['job_type'] == 'full_time' ? 'primary' : ($job['job_type'] == 'part_time' ? 'success' : ($job['job_type'] == 'remote' ? 'info' : 'secondary')) ?>">
+                                        <?= ucfirst(str_replace('_', ' ', $job['job_type'])) ?>
                                     </span>
                                     <small class="text-muted"><?= timeAgo($job['created_at']) ?></small>
                                 </div>

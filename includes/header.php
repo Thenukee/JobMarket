@@ -3,8 +3,8 @@
  * Header template for AmmooJobs platform
  * Contains HTML header, navigation, and top-level UI elements
  * 
- * @version 1.2.0
- * @last_updated 2025-05-01
+ * @version 1.3.0
+ * @last_updated 2025-05-02
  */
 
 // Start measuring page load time if debug mode is enabled
@@ -26,7 +26,7 @@ if (isLoggedIn()) {
 }
 
 // Current date/time and user for debugging
-$currentDateTime = date('Y-m-d H:i:s'); // 2025-05-01 17:11:18
+$currentDateTime = date('Y-m-d H:i:s'); // 2025-05-02 09:26:03
 $currentUser = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // HasinduNimesh
 ?>
 <!DOCTYPE html>
@@ -48,9 +48,15 @@ $currentUser = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Hasind
     <!-- CSS Libraries -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Custom CSS -->
-    <link href="assets/css/style.css?v=<?= VERSION ?>" rel="stylesheet">
+    <!-- FIXED: Changed style.css to styles.css and added cache-busting timestamp -->
+    <link href="assets/css/styles.css?v=<?= time() ?>" rel="stylesheet">
     
     <?php if (isset($pageStyles) && is_array($pageStyles)): ?>
         <?php foreach ($pageStyles as $style): ?>
@@ -69,7 +75,7 @@ $currentUser = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Hasind
     
     if ($userTheme == 'dark'): 
     ?>
-        <link href="assets/css/dark-theme.css?v=<?= VERSION ?>" rel="stylesheet">
+        <link href="assets/css/dark-theme.css?v=<?= time() ?>" rel="stylesheet">
     <?php endif; ?>
     
     <!-- Open Graph Tags -->
@@ -95,6 +101,66 @@ $currentUser = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Hasind
         ]
     }
     </script>
+    
+    <!-- CSS Debugging Script -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("CSS files loaded:");
+        const cssFiles = Array.from(document.styleSheets).map(sheet => sheet.href);
+        console.log(cssFiles);
+        
+        // Check if our styles.css is loaded
+        const ourCss = cssFiles.filter(href => href && href.includes('styles.css'));
+        if (ourCss.length === 0) {
+            console.error("WARNING: styles.css not found! Please check the file path and name.");
+        } else {
+            console.log("✅ styles.css loaded successfully");
+        }
+    });
+    </script>
+    
+    <!-- Fallback Styling -->
+    <style>
+    /* Critical CSS fallback in case external stylesheet fails */
+    :root {
+        --primary: #3b82f6;
+        --primary-dark: #1d4ed8;
+        --primary-light: #93c5fd;
+        --body-bg: #f9fafb;
+        --border-radius: 0.5rem;
+        --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    body {
+        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        background-color: var(--body-bg);
+    }
+    
+    .job-header {
+        background-color: #f9fafb;
+        padding: 2rem 0;
+        border-bottom: 1px solid #e5e7eb;
+        margin-bottom: 2rem;
+    }
+    
+    .card {
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        margin-bottom: 1.5rem;
+    }
+    
+    .card-header {
+        background-color: white;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+    }
+    
+    .card-body {
+        padding: 1.5rem;
+    }
+    </style>
 </head>
 <body class="d-flex flex-column h-100">
     <!-- Maintenance Mode Banner -->
@@ -333,7 +399,7 @@ $currentUser = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Hasind
         </div>
     </header>
     
-    <?php if (isEmployer() && PREMIUM_ENABLED): ?>
+    <?php if (isEmployer() && defined('PREMIUM_ENABLED') && PREMIUM_ENABLED): ?>
         <!-- Premium Upgrade Banner (for non-premium employers) -->
         <?php
         $isPremium = false;
@@ -457,7 +523,7 @@ $currentUser = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Hasind
             <div class="container">
                 <div class="row">
                     <div class="col-md-6">
-                        <i class="fas fa-clock me-1"></i> Current time (UTC): <?= $currentDateTime ?> <!-- 2025-05-01 17:11:18 -->
+                        <i class="fas fa-clock me-1"></i> Current time (UTC): <?= $currentDateTime ?> <!-- 2025-05-02 09:26:03 -->
                     </div>
                     <div class="col-md-6 text-md-end">
                         <i class="fas fa-user me-1"></i> User: <?= $currentUser ?> <!-- HasinduNimesh -->
