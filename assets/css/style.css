@@ -1,0 +1,875 @@
+/**
+ * AmmooJobs Main Stylesheet
+ * 
+ * @version 1.2.0
+ * @last_updated 2025-05-01
+ */
+
+/* ====================================
+   1. Global Styles & Variables
+   ==================================== */
+   :root {
+    --primary: #3b82f6;
+    --primary-dark: #2563eb;
+    --primary-light: #93c5fd;
+    --secondary: #6b7280;
+    --secondary-light: #e5e7eb;
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --info: #3b82f6;
+    --dark: #111827;
+    --light: #f9fafb;
+    --white: #ffffff;
+    --body-bg: #f9fafb;
+    --body-color: #333333;
+    --link-color: #2563eb;
+    --link-hover-color: #1e40af;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --font-family-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-family-heading: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --border-radius: 0.375rem;
+    --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --transition: all 0.3s ease;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-family-sans);
+    background-color: var(--body-bg);
+    color: var(--body-color);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-family-heading);
+    font-weight: 600;
+    line-height: 1.2;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: var(--gray-900);
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+a:hover {
+    color: var(--link-hover-color);
+}
+
+/* Bootstrap Overrides */
+.btn {
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    padding: 0.5rem 1.25rem;
+    transition: var(--transition);
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.form-control {
+    border-radius: var(--border-radius);
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--gray-300);
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+}
+
+.alert {
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.card {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: transparent;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--gray-200);
+    font-weight: 600;
+}
+
+.dropdown-menu {
+    border: none;
+    box-shadow: var(--box-shadow);
+    border-radius: var(--border-radius);
+}
+
+/* ====================================
+   2. Header & Navigation
+   ==================================== */
+.navbar {
+    padding: 0.75rem 0;
+}
+
+.navbar-brand img {
+    max-height: 40px;
+}
+
+.nav-link {
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+    position: relative;
+}
+
+.nav-link:hover {
+    color: var(--primary) !important;
+}
+
+.navbar .dropdown-menu {
+    margin-top: 0.5rem;
+    padding: 0.5rem 0;
+}
+
+.navbar .dropdown-item {
+    padding: 0.5rem 1.5rem;
+    font-size: 0.9rem;
+}
+
+.navbar .dropdown-item:hover, .navbar .dropdown-item:focus {
+    background-color: var(--gray-100);
+}
+
+.navbar .user-avatar-placeholder {
+    width: 32px;
+    height: 32px;
+    background-color: var(--gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: var(--gray-600);
+}
+
+/* Notification bell */
+.notification-bell {
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    position: relative;
+    display: inline-block;
+}
+
+.notification-dropdown {
+    width: 320px;
+    padding: 0;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.dropdown-header {
+    padding: 0.75rem 1rem;
+    background-color: var(--gray-50);
+    border-bottom: 1px solid var(--gray-200);
+    font-weight: 600;
+}
+
+.notification-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--gray-200);
+    transition: var(--transition);
+    display: block;
+}
+
+.notification-item.unread {
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+.notification-item:hover {
+    background-color: var(--gray-100);
+}
+
+.notification-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 14px;
+}
+
+.unread-indicator {
+    width: 8px;
+    height: 8px;
+    background-color: var(--primary);
+    border-radius: 50%;
+}
+
+/* ====================================
+   3. Hero & Search Area
+   ==================================== */
+.hero-section {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    padding: 4rem 0;
+    color: var(--white);
+}
+
+.job-search-form {
+    padding: 1rem 0;
+}
+
+.search-input-group {
+    position: relative;
+}
+
+.search-input-group i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.search-input-group .form-control {
+    padding-left: 40px;
+}
+
+/* ====================================
+   4. Job Cards & Listings
+   ==================================== */
+.job-card {
+    border: 1px solid var(--gray-200);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: var(--transition);
+    position: relative;
+    display: flex;
+}
+
+.job-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--box-shadow);
+    border-color: var(--primary-light);
+}
+
+.job-logo {
+    width: 60px;
+    height: 60px;
+    margin-right: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-radius);
+    background-color: var(--gray-100);
+    overflow: hidden;
+}
+
+.job-logo img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.job-title {
+    margin-bottom: 0.5rem;
+}
+
+.job-company {
+    font-weight: 500;
+    color: var(--gray-600);
+}
+
+.job-meta {
+    color: var(--gray-500);
+    font-size: 0.875rem;
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.job-meta i {
+    margin-right: 0.25rem;
+}
+
+.job-actions {
+    margin-top: 1.5rem;
+}
+
+.job-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.job-featured {
+    border-left: 3px solid var(--primary);
+}
+
+/* ====================================
+   5. Employer & Company Styles
+   ==================================== */
+.employer-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.employer-img {
+    max-width: 150px;
+    max-height: 150px;
+    object-fit: contain;
+}
+
+.employer-img-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 5px;
+    background-color: var(--gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.rating {
+    display: inline-block;
+}
+
+.rating-lg {
+    font-size: 1.5rem;
+}
+
+.rating-number {
+    font-size: 0.875rem;
+    font-weight: 600;
+    width: 20px;
+    display: inline-block;
+    text-align: center;
+}
+
+/* ====================================
+   6. Forms & Input Fields
+   ==================================== */
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.form-text {
+    color: var(--gray-500);
+    font-size: 0.875rem;
+}
+
+.form-check-label {
+    color: var(--gray-700);
+}
+
+.custom-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    padding-right: 2rem;
+}
+
+.password-toggle {
+    border-left-width: 0;
+}
+
+.input-group-text {
+    background-color: var(--gray-100);
+    border-color: var(--gray-300);
+    color: var(--gray-600);
+}
+
+/* File Upload */
+.custom-file-upload {
+    border: 1px dashed var(--gray-300);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    transition: var(--transition);
+}
+
+.custom-file-upload:hover {
+    border-color: var(--primary);
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+.custom-file-upload i {
+    font-size: 2rem;
+    color: var(--gray-400);
+    margin-bottom: 0.5rem;
+}
+
+/* Profile Image Upload */
+.profile-image-container {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1rem;
+}
+
+.profile-image {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+}
+
+.profile-image-placeholder {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: var(--gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-500);
+    font-size: 3rem;
+}
+
+.profile-image-preview {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin: 0 auto;
+    overflow: hidden;
+    border: 3px solid var(--gray-200);
+}
+
+.profile-image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Star Rating Input */
+.rating-input {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.rating-star {
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: var(--warning);
+    display: inline-block;
+}
+
+/* ====================================
+   7. Profile & Dashboard
+   ==================================== */
+.profile-stats {
+    border-top: 1px solid var(--gray-200);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 0.75rem 0;
+}
+
+.profile-stats h6 {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.list-group-item.px-0 {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.dashboard-card {
+    height: 100%;
+    transition: var(--transition);
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.dashboard-card .icon-box {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.stat-card {
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+}
+
+.stat-card .stat-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card .stat-title {
+    font-size: 0.875rem;
+    color: var(--gray-500);
+    margin-bottom: 0.25rem;
+}
+
+.stat-card .stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* ====================================
+   8. Footer Styles
+   ==================================== */
+.footer {
+    border-top: 1px solid var(--gray-200);
+    margin-top: 2rem;
+}
+
+.footer h5 {
+    margin-bottom: 1.25rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.footer ul {
+    margin-bottom: 1.5rem;
+}
+
+.footer a {
+    color: rgba(255, 255, 255, 0.7);
+    display: block;
+    padding: 0.25rem 0;
+}
+
+.footer a:hover {
+    color: var(--white);
+}
+
+.social-links a {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    text-align: center;
+    line-height: 32px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: var(--transition);
+}
+
+.social-links a:hover {
+    background-color: var(--primary);
+    color: var(--white);
+}
+
+/* Cookie Consent Banner */
+.cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--dark);
+    color: var(--light);
+    z-index: 1030;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Back to Top Button */
+.back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1020;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    box-shadow: 0 2px 10px rgba(59, 130, 246, 0.5);
+}
+
+.back-to-top.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-to-top:hover {
+    background-color: var(--primary-dark);
+    color: var(--white);
+}
+
+/* ====================================
+   9. Utility Classes
+   ==================================== */
+.bg-image {
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.overlay {
+    position: relative;
+}
+
+.overlay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.overlay-content {
+    position: relative;
+    z-index: 1;
+}
+
+.text-truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.border-dashed {
+    border-style: dashed !important;
+}
+
+.badge-outline-primary {
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    background-color: transparent;
+}
+
+.badge-outline-secondary {
+    color: var(--secondary);
+    border: 1px solid var(--secondary);
+    background-color: transparent;
+}
+
+.shadow-sm {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+}
+
+.shadow {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+.shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.text-primary-light {
+    color: var(--primary-light) !important;
+}
+
+.text-primary-dark {
+    color: var(--primary-dark) !important;
+}
+
+.bg-primary-light {
+    background-color: var(--primary-light) !important;
+}
+
+.bg-primary-dark {
+    background-color: var(--primary-dark) !important;
+}
+
+.bg-secondary-light {
+    background-color: var(--secondary-light) !important;
+}
+
+/* ====================================
+   10. Responsive Styles
+   ==================================== */
+@media (max-width: 992px) {
+    .navbar .dropdown-menu {
+        box-shadow: none;
+        border: 1px solid var(--gray-200);
+    }
+
+    .notification-dropdown {
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .job-card {
+        padding: 1rem;
+    }
+
+    .job-logo {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+@media (max-width: 768px) {
+    html {
+        font-size: 14px;
+    }
+
+    .hero-section {
+        padding: 3rem 0;
+    }
+
+    .job-card {
+        flex-direction: column;
+    }
+
+    .job-logo {
+        margin-bottom: 1rem;
+    }
+
+    .job-badge {
+        position: static;
+        display: inline-block;
+        margin-bottom: 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .search-input-group {
+        margin-bottom: 0.5rem;
+    }
+
+    .card-header {
+        padding: 1rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .profile-image-container {
+        width: 80px;
+        height: 80px;
+    }
+
+    .profile-image,
+    .profile-image-placeholder {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+/* ====================================
+   11. Print Styles
+   ==================================== */
+@media print {
+    header, footer, .no-print {
+        display: none !important;
+    }
+
+    body {
+        background-color: var(--white);
+        font-size: 12pt;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    a {
+        text-decoration: none !important;
+        color: var(--dark) !important;
+    }
+
+    .card {
+        box-shadow: none !important;
+        border: 1px solid var(--gray-300) !important;
+    }
+}
+
+/* ====================================
+   12. Debug Styles
+   ==================================== */
+.debug-info {
+    border-radius: var(--border-radius);
+    font-family: monospace;
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    color: #00ff00;
+}
+
+/* ====================================
+   13. Animation & Transitions
+   ==================================== */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.transition-all {
+    transition: var(--transition);
+}
+
+/* Generated by HasinduNimesh at 2025-05-01 17:24:59 */
