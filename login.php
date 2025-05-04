@@ -52,8 +52,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             
             // Redirect to intended page or dashboard
-            $redirect = isset($_SESSION['redirect_url']) ? $_SESSION['redirect_url'] : 'dashboard.php';
-            unset($_SESSION['redirect_url']);
+            if (isAdmin()) {
+                $redirect = 'admin/index.php';
+            } else {
+                $redirect = 'dashboard.php';
+            }
             header("Location: $redirect");
             exit;
         } else {

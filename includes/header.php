@@ -243,7 +243,7 @@ $currentUser = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Hasind
                                 Admin
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="adminDropdown">
-                                <li><a class="dropdown-item" href="admin/dashboard.php">Dashboard</a></li>
+                                <li><a class="dropdown-item" href="admin/index.php">Dashboard</a></li>
                                 <li><a class="dropdown-item" href="admin/users.php">Manage Users</a></li>
                                 <li><a class="dropdown-item" href="admin/jobs.php">Manage Jobs</a></li>
                                 <li><hr class="dropdown-divider"></li>

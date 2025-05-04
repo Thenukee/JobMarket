@@ -3,7 +3,7 @@
  * Main configuration file for AmmooJobs
  * 
  * Contains all configuration settings, constants, and global settings
- * Last updated: 2025-05-01
+ * Last updated: 2025-05-02
  */
 
 // Start session if not already started
@@ -14,7 +14,7 @@ if (session_status() == PHP_SESSION_NONE) {
 // Site information
 define('SITE_NAME', 'AmmooJobs');
 define('SITE_TAGLINE', 'Find Your Dream Job');
-define('SITE_URL', 'https://www.ammoojobs.com');
+define('SITE_URL', 'http://ammoojobs.onlinewebshop.net/');
 define('ADMIN_EMAIL', 'admin@ammoojobs.com');
 define('SUPPORT_EMAIL', 'support@ammoojobs.com');
 define('NOREPLY_EMAIL', 'noreply@ammoojobs.com');
@@ -23,27 +23,28 @@ define('NOREPLY_EMAIL', 'noreply@ammoojobs.com');
 define('ENVIRONMENT', 'production');
 
 // Database configuration
-// Database configuration
-define('DB_HOST', 'fdb1030.awardspace.net');     // Your MySQL hostname
-define('DB_NAME', '4627962_ammoo');      // Your database name
-define('DB_USER', '4627962_ammoo');                // Your MySQL username
-define('DB_PASS', 'StrongPassword123');                // Your MySQL password
-define('DB_PORT', 3306);                          // Your MySQL port (optional)          // Your database password/ Note: In a real app, use environment variables
+define('DB_HOST', 'fdb1030.awardspace.net');
+define('DB_NAME', '4627962_ammoo');
+define('DB_USER', '4627962_ammoo');
+define('DB_PASS', 'StrongPassword123');
+define('DB_PORT', 3306);
+
+define('DEBUG_MODE', true);
 
 // Security settings
-define('HASH_SALT', 'am#m00J0bs!S@ltV@lu3'); // For additional hashing if needed
-define('CSRF_EXPIRY', 3600); // Token expiry in seconds (1 hour)
-define('SESSION_LIFETIME', 7200); // Session expiry in seconds (2 hours)
-define('PASSWORD_RESET_EXPIRY', 3600); // Password reset token expiry (1 hour)
-define('LOGIN_ATTEMPTS_LIMIT', 5); // Max failed login attempts before temporary lockout
-define('LOCKOUT_TIME', 900); // Account lockout time in seconds (15 minutes)
+define('HASH_SALT', 'am#m00J0bs!S@ltV@lu3');
+define('CSRF_EXPIRY', 3600);
+define('SESSION_LIFETIME', 7200);
+define('PASSWORD_RESET_EXPIRY', 3600);
+define('LOGIN_ATTEMPTS_LIMIT', 5);
+define('LOCKOUT_TIME', 900);
 
 // File upload settings
 define('UPLOAD_PATH', dirname(dirname(__FILE__)) . '/uploads/');
 define('PROFILE_PATH', UPLOAD_PATH . 'profiles/');
 define('RESUME_PATH', UPLOAD_PATH . 'resumes/');
 define('COMPANY_LOGO_PATH', UPLOAD_PATH . 'logos/');
-define('MAX_UPLOAD_SIZE', 5242880); // 5MB in bytes
+define('MAX_UPLOAD_SIZE', 5242880);
 define('ALLOWED_IMAGE_TYPES', ['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
 define('ALLOWED_RESUME_TYPES', ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']);
 
@@ -52,28 +53,26 @@ define('ITEMS_PER_PAGE', 10);
 define('MAX_PAGINATION_LINKS', 5);
 
 // Job application settings
-define('MAX_APPLICATIONS_PER_DAY', 20); // Limit applications per day for seekers
-define('MAX_ACTIVE_JOBS', 10); // Default limit for active jobs per employer
-define('EXPIRE_JOBS_AFTER_DAYS', 30); // Auto-close jobs after this many days
+define('MAX_APPLICATIONS_PER_DAY', 20);
+define('MAX_ACTIVE_JOBS', 10);
+define('EXPIRE_JOBS_AFTER_DAYS', 30);
 
 // Content moderation settings
-define('REQUIRE_REVIEW_APPROVAL', true); // Whether employer reviews require approval
-define('AUTO_APPROVE_JOBS', false); // Whether job postings require approval
-define('PROFANITY_FILTER', true); // Enable automatic profanity filtering
+define('REQUIRE_REVIEW_APPROVAL', true);
+define('AUTO_APPROVE_JOBS', false);
+define('PROFANITY_FILTER', true);
 
-// Payment and subscription settings (if applicable)
+// Payment and subscription settings
 define('PREMIUM_ENABLED', true);
 define('CURRENCY', 'USD');
-// Around line 65 in includes/config.php
 if (!defined('CURRENCY_SYMBOL')) {
     define('CURRENCY_SYMBOL', '$');
 }
-define('VAT_RATE', 0.20); // 20% VAT/tax rate
+define('VAT_RATE', 0.20);
 
 // System maintenance
-define('MAINTENANCE_MODE', false); // Set to true to enable maintenance mode
+define('MAINTENANCE_MODE', false);
 define('MAINTENANCE_MESSAGE', 'We are currently performing scheduled maintenance. Please check back soon!');
-define('DEBUG_MODE', false); // Enable/disable debugging
 
 // Timezone settings
 date_default_timezone_set('UTC');
@@ -90,7 +89,6 @@ if (ENVIRONMENT === 'development') {
     ini_set('display_errors', 0);
     ini_set('log_errors', 1);
     ini_set('error_log', dirname(dirname(__FILE__)) . '/logs/error.log');
-    define('DEBUG_MODE', false);
 }
 
 // Create required directories if they don't exist
@@ -102,13 +100,13 @@ foreach ($directories as $dir) {
 }
 
 // Initialize system information for debugging
-if (DEBUG_MODE) {
+if (defined('DEBUG_MODE') && DEBUG_MODE) {
     $systemInfo = [
         'php_version' => PHP_VERSION,
         'server_software' => $_SERVER['SERVER_SOFTWARE'],
         'database' => 'MySQL',
-        'current_time_utc' => date('Y-m-d H:i:s'), // Current UTC time: 2025-05-01 17:04:14
-        'current_user' => isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest' // Current user: HasinduNimesh
+        'current_time_utc' => date('Y-m-d H:i:s'),
+        'current_user' => isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'
     ];
     
     // Log system startup information
@@ -118,14 +116,9 @@ if (DEBUG_MODE) {
 
 /**
  * Helper function for pretty print debugging 
- * Only outputs if DEBUG_MODE is true
- * 
- * @param mixed $data Data to debug
- * @param bool $die Whether to die after output
- * @return void
  */
 function debug($data, $die = false) {
-    if (DEBUG_MODE) {
+    if (defined('DEBUG_MODE') && DEBUG_MODE) {
         echo '<pre>';
         print_r($data);
         echo '</pre>';
@@ -142,4 +135,3 @@ define('DEFAULT_THEME', 'light');
 define('DEFAULT_PAGE_TITLE', SITE_NAME . ' - ' . SITE_TAGLINE);
 define('COPYRIGHT_YEAR', '2025');
 define('VERSION', '1.2.0');
-?>

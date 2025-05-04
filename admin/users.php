@@ -12,6 +12,8 @@ require_once '../includes/config.php';
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
 require_once '../includes/auth.php';
+require_once '../includes/session.php';
+
 
 // Ensure only admins can access this page
 requireAdmin();
@@ -493,7 +495,7 @@ switch ($action) {
 }
 
 // Include header
-include_once '../includes/admin_header.php';
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="container-fluid px-4">
@@ -1777,7 +1779,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <?php
 // Include footer
-include_once '../includes/admin_footer.php';
+require_once __DIR__ . '/../includes/footer.php';
 
 // Debug comment with current time and user
 echo "<!-- Page generated at 2025-05-01 18:15:12 by HasinduNimesh -->";

@@ -3,14 +3,19 @@
  * Common functions for AmmooJobs platform
  * Contains utility functions used across the application
  * 
- * @version 1.2.0
- * @last_updated 2025-05-01
+ * @version 1.3.0
+ * @last_updated 2025-05-02
  */
 
 // Start measuring page load time if debug mode is enabled
 if (defined('DEBUG_MODE') && DEBUG_MODE) {
     $GLOBALS['page_start_time'] = microtime(true);
 }
+
+// Define required constants if they don't exist
+if (!defined('PROFANITY_FILTER')) define('PROFANITY_FILTER', false);
+if (!defined('CURRENCY_SYMBOL')) define('CURRENCY_SYMBOL', '$');
+if (!defined('CSRF_EXPIRY')) define('CSRF_EXPIRY', 3600); // 1 hour default
 
 /**
  * ===================================
@@ -240,7 +245,11 @@ function formatSalary($min, $max = null, $period = 'annually') {
  * @return string Time ago string (e.g., "5 minutes ago")
  */
 function timeAgo($timestamp) {
+    if (empty($timestamp)) return 'N/A';
+    
     $time = strtotime($timestamp);
+    if ($time === false) return 'Invalid date';
+    
     $currentTime = time();
     $timeDiff = $currentTime - $time;
     
@@ -371,10 +380,10 @@ function getJobCategories() {
         'engineering' => 'Engineering',
         'hospitality' => 'Hospitality',
         'retail' => 'Retail',
-        'customer-service' => 'Customer Service',
+        'customer_service' => 'Customer Service',  // Changed to underscore
         'administrative' => 'Administrative',
         'legal' => 'Legal',
-        'human-resources' => 'Human Resources',
+        'human_resources' => 'Human Resources',    // Changed to underscore
         'manufacturing' => 'Manufacturing',
         'construction' => 'Construction',
         'design' => 'Design',
@@ -393,8 +402,8 @@ function getJobCategories() {
  */
 function getJobTypes() {
     return [
-        'full-time' => 'Full Time',
-        'part-time' => 'Part Time',
+        'full_time' => 'Full Time',
+        'part_time' => 'Part Time',
         'contract' => 'Contract',
         'temporary' => 'Temporary',
         'remote' => 'Remote',
@@ -424,7 +433,7 @@ function getExperienceLevels() {
  */
 function getEducationLevels() {
     return [
-        'high-school' => 'High School',
+        'high_school' => 'High School',          // Changed to underscore
         'associate' => 'Associate Degree',
         'bachelor' => 'Bachelor\'s Degree',
         'master' => 'Master\'s Degree',
@@ -446,6 +455,8 @@ function calculateDaysLeft($deadline) {
     }
     
     $deadlineTime = strtotime($deadline);
+    if ($deadlineTime === false) return 'Invalid date';
+    
     $currentTime = time();
     
     if ($deadlineTime < $currentTime) {
@@ -481,11 +492,18 @@ function calculateDaysLeft($deadline) {
 function addNotification($userId, $type, $message, $link = null) {
     global $db;
     
-    return $db->executeNonQuery(
-        "INSERT INTO notifications (user_id, type, message, link, created_at, is_read) 
-         VALUES (?, ?, ?, ?, NOW(), 0)",
-        [$userId, $type, $message, $link]
-    );
+    if (!isset($db)) return false;
+    
+    try {
+        return $db->executeNonQuery(
+            "INSERT INTO notifications (user_id, type, message, link, created_at, is_read) 
+             VALUES (?, ?, ?, ?, NOW(), 0)",
+            [$userId, $type, $message, $link]
+        );
+    } catch (Exception $e) {
+        error_log("Error adding notification: " . $e->getMessage());
+        return false;
+    }
 }
 
 /**
@@ -497,8 +515,15 @@ function addNotification($userId, $type, $message, $link = null) {
 function getUnreadNotificationCount($userId) {
     global $db;
     
-    $result = $db->fetchSingle("SELECT COUNT(*) as count FROM notifications WHERE user_id = ? AND is_read = 0", [$userId]);
-    return $result ? (int)$result['count'] : 0;
+    if (!isset($db)) return 0;
+    
+    try {
+        $result = $db->fetchSingle("SELECT COUNT(*) as count FROM notifications WHERE user_id = ? AND is_read = 0", [$userId]);
+        return $result ? (int)$result['count'] : 0;
+    } catch (Exception $e) {
+        error_log("Error getting notification count: " . $e->getMessage());
+        return 0;
+    }
 }
 
 /**
@@ -511,10 +536,17 @@ function getUnreadNotificationCount($userId) {
 function markNotificationRead($notificationId, $userId) {
     global $db;
     
-    return $db->executeNonQuery(
-        "UPDATE notifications SET is_read = 1 WHERE notification_id = ? AND user_id = ?",
-        [$notificationId, $userId]
-    );
+    if (!isset($db)) return false;
+    
+    try {
+        return $db->executeNonQuery(
+            "UPDATE notifications SET is_read = 1 WHERE notification_id = ? AND user_id = ?",
+            [$notificationId, $userId]
+        );
+    } catch (Exception $e) {
+        error_log("Error marking notification as read: " . $e->getMessage());
+        return false;
+    }
 }
 
 /**
@@ -568,7 +600,7 @@ function logDebug($data, $label = '') {
         return;
     }
     
-    $currentDate = date('Y-m-d H:i:s'); // Current server time: 2025-05-01 17:08:44
+    $currentDate = date('Y-m-d H:i:s'); // Current server time: 2025-05-02 11:36:26
     $currentUser = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Current user: HasinduNimesh
     
     $output = "[$currentDate] [$currentUser]";
@@ -711,27 +743,26 @@ function slugify($string) {
 function logSystemActivity($action, $details, $userId = null) {
     global $db;
     
-    $currentDate = date('Y-m-d H:i:s'); // Current server time: 2025-05-01 17:08:44
-    $ipAddress = getClientIp();
+    if (!isset($db)) return false;
     
-    return $db->executeNonQuery(
-        "INSERT INTO system_activity_log (action, details, user_id, ip_address, timestamp) 
-         VALUES (?, ?, ?, ?, ?)",
-        [$action, $details, $userId, $ipAddress, $currentDate]
-    );
+    try {
+        $currentDate = date('Y-m-d H:i:s'); // Current server time: 2025-05-02 11:36:26
+        $ipAddress = getClientIp();
+        
+        return $db->executeNonQuery(
+            "INSERT INTO system_activity_log (action, details, user_id, ip_address, timestamp) 
+             VALUES (?, ?, ?, ?, ?)",
+            [$action, $details, $userId, $ipAddress, $currentDate]
+        );
+    } catch (Exception $e) {
+        error_log("Error logging system activity: " . $e->getMessage());
+        return false;
+    }
 }
 
 // Log script execution in debug mode
 if (defined('DEBUG_MODE') && DEBUG_MODE) {
-    $currentDate = date('Y-m-d H:i:s'); // Current server time: 2025-05-01 17:08:44
+    $currentDate = date('Y-m-d H:i:s'); // Current server time: 2025-05-02 11:36:26
     $currentUser = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Current user: HasinduNimesh
     error_log("[$currentDate] [$currentUser] functions.php loaded");
 }
-
-
-function columnExists($table, $column) {
-    global $db;
-    $result = $db->fetchAll("SHOW COLUMNS FROM `$table` LIKE '$column'");
-    return !empty($result);
-}
-?>

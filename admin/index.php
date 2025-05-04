@@ -265,7 +265,7 @@ include_once '../includes/admin_header.php';
                     </div>
                 </div>
                 <div class="card-footer text-end">
-                    <a href="tasks.php" class="btn btn-sm btn-primary">View All Tasks</a>
+                    <a href="admin/tasks.php" class="btn btn-sm btn-primary">View All Tasks</a>
                 </div>
             </div>
         </div>
@@ -383,7 +383,7 @@ include_once '../includes/admin_header.php';
                     </div>
                 </div>
                 <div class="card-footer text-end">
-                    <a href="logs.php?type=activity" class="btn btn-sm btn-primary">View All Activity</a>
+                    <a href="admin/logs.php?type=activity" class="btn btn-sm btn-primary">View All Activity</a>
                 </div>
             </div>
         </div>
